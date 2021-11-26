@@ -39,6 +39,7 @@ enum custom_keycodes {
   CONNLCBC,
   CYGWIN,
   EXITVNCV,
+  LEDBRIGHT,
   LOCKDESK,
   LOCKKBD,
   UNLOCKKBD,
@@ -56,7 +57,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                            KC_BSPACE, KC_DELETE, KC_F23,        KC_F24,    KC_ENTER,  KC_SPACE                                                          //
   ),
   [1] = LAYOUT_ergodox_pretty(
-    KC_ESC,    XXXXXXX,   XXXXXXX,   XXXXXXX,   XXXXXXX,   XXXXXXX,   XXXXXXX,                             XXXXXXX,   XXXXXXX,   XXXXXXX,   XXXXXXX,   XXXXXXX,   XXXXXXX,   RESET,     //
+    KC_ESC,    XXXXXXX,   XXXXXXX,   XXXXXXX,   XXXXXXX,   XXXXXXX,   XXXXXXX,                             XXXXXXX,   XXXXXXX,   XXXXXXX,   XXXXXXX,   LEDBRIGHT, XXXXXXX,   RESET,     //
     XXXXXXX,   XXXXXXX,   XXXXXXX,   XXXXXXX,   XXXXXXX,   XXXXXXX,   XXXXXXX,                             XXXXXXX,   XXXXXXX,   XXXXXXX,   MS_UP,     XXXXXXX,   MS_BTN2,   XXXXXXX,   //
     XXXXXXX,   MS_ACCEL2, MS_ACCEL1, MS_ACCEL0, MS_ACCELP, XXXXXXX,                                                   MSW_UP,    MS_LEFT,   MS_DOWN,   MS_RIGHT,  MS_BTN1,   XXXXXXX,   //
     XXXXXXX,   CONNLC,    CONNLCBC,  CONND,     CONNDBC,   CYGWIN,    XXXXXXX,                             XXXXXXX,   MSW_DOWN,  MSW_LEFT,  XXXXXXX,   MSW_RIGHT, MS_BTN3,   XXXXXXX,   //
@@ -69,6 +70,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 static bool is_layer1_and_altdown = false;
 static bool is_locked = false;
+static uint8_t led_brightness = 0x10;
+
+void update_led_brightness(void) {
+  ergodox_led_all_set(led_brightness-1);
+}
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   if (keycode == UNLOCKKBD) {
@@ -117,6 +123,14 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       ergodox_right_led_2_on();
       SEND_STRING(SS_TAP(X_F8) SS_DELAY(100) SS_TAP(X_C));
       break;
+    case LEDBRIGHT:
+      if(led_brightness) {
+        led_brightness <<= 2;
+      } else {
+        led_brightness = 1;
+      }
+      update_led_brightness();
+      break;
     case LOCKDESK:
       ergodox_right_led_2_on();
       SEND_STRING(SS_DOWN(X_LSUPER) SS_DELAY(100) SS_TAP(X_L) SS_DELAY(100) SS_UP(X_LSUPER));
@@ -140,4 +154,8 @@ uint32_t layer_state_set_user(uint32_t state) {
     is_layer1_and_altdown = false;
   }
   return state;
+};
+
+void keyboard_post_init_user(void) {
+  update_led_brightness();
 };
