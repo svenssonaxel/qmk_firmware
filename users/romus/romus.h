@@ -43,6 +43,9 @@
 #define MO_AC_0 KC_MS_ACCEL0
 #define MO_AC_1 KC_MS_ACCEL1
 #define MO_AC_2 KC_MS_ACCEL2
+#ifdef HAS_ACCELP
+#define MO_AC_P KC_MS_ACCELP
+#endif
 #else
 #define MO_S_N  KC_NO
 #define MO_S_S  KC_NO
@@ -60,6 +63,9 @@
 #define MO_AC_0 KC_NO
 #define MO_AC_1 KC_NO
 #define MO_AC_2 KC_NO
+#ifdef HAS_ACCELP
+#define MO_AC_P KC_NO
+#endif
 #endif
 
 // Rename music keys with <8 letters

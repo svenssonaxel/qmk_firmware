@@ -37,11 +37,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #define IS_FN(code) (KC_FN0 <= (code) && (code) <= KC_FN31)
 
-#define IS_MOUSEKEY(code) (KC_MS_UP <= (code) && (code) <= KC_MS_ACCEL2)
+#define IS_MOUSEKEY(code) (KC_MS_UP <= (code) && (code) <= KC_MS_ACCEL_LAST)
 #define IS_MOUSEKEY_MOVE(code) (KC_MS_UP <= (code) && (code) <= KC_MS_RIGHT)
 #define IS_MOUSEKEY_BUTTON(code) (KC_MS_BTN1 <= (code) && (code) <= KC_MS_BTN8)
 #define IS_MOUSEKEY_WHEEL(code) (KC_MS_WH_UP <= (code) && (code) <= KC_MS_WH_RIGHT)
-#define IS_MOUSEKEY_ACCEL(code) (KC_MS_ACCEL0 <= (code) && (code) <= KC_MS_ACCEL2)
+#define IS_MOUSEKEY_ACCEL(code) (KC_MS_ACCEL0 <= (code) && (code) <= KC_MS_ACCEL_LAST)
 
 #define MOD_BIT(code) (1 << MOD_INDEX(code))
 #define MOD_INDEX(code) ((code)&0x07)
@@ -215,6 +215,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define KC_ACL0 KC_MS_ACCEL0
 #define KC_ACL1 KC_MS_ACCEL1
 #define KC_ACL2 KC_MS_ACCEL2
+#ifdef HAS_ACCELP
+#define KC_ACLP KC_MS_ACCELP
+#endif
 
 /* Keyboard/Keypad Page (0x07) */
 enum hid_keyboard_keypad_usage {
@@ -536,15 +539,24 @@ enum mouse_keys {
     KC_MS_BTN2,
     KC_MS_BTN3,
     KC_MS_BTN4,
-    KC_MS_BTN5,
 #ifdef VIA_ENABLE
+#ifdef HAS_ACCELP
+    KC_MS_BTN5 = KC_MS_BTN4,
+#else
+    KC_MS_BTN5,
+#endif
     KC_MS_BTN6 = KC_MS_BTN5,
     KC_MS_BTN7 = KC_MS_BTN5,
     KC_MS_BTN8 = KC_MS_BTN5,
 #else
+    KC_MS_BTN5,
     KC_MS_BTN6,
     KC_MS_BTN7,
+#ifdef HAS_ACCELP
+    KC_MS_BTN8 = KC_MS_BTN7,
+#else
     KC_MS_BTN8,
+#endif
 #endif
 
     /* Mouse Wheel */
@@ -556,5 +568,17 @@ enum mouse_keys {
     /* Acceleration */
     KC_MS_ACCEL0,
     KC_MS_ACCEL1,
-    KC_MS_ACCEL2  // 0xFF
+    KC_MS_ACCEL2,  // 0xFF or 0xFE
+#ifdef HAS_ACCELP
+    KC_MS_ACCELP,
+#endif
 };
+
+#ifdef HAS_ACCELP
+#define KC_MS_ACCEL_LAST KC_MS_ACCELP
+_Static_assert(KC_MS_ACCEL2 == 0xFE, "");
+_Static_assert(KC_MS_ACCELP == 0xFF, "");
+#else
+#define KC_MS_ACCEL_LAST KC_MS_ACCEL2
+_Static_assert(KC_MS_ACCEL2 == 0xFF, "");
+#endif

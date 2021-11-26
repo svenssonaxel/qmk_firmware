@@ -156,6 +156,9 @@
 #define X_ACL0 X_MS_ACCEL0
 #define X_ACL1 X_MS_ACCEL1
 #define X_ACL2 X_MS_ACCEL2
+#ifdef HAS_ACCELP
+#define X_ACLP X_MS_ACCELP
+#endif
 
 /* Keyboard/Keypad Page (0x07) */
 #define X_A                  04
@@ -371,10 +374,15 @@
 #define X_MS_BTN2            f5
 #define X_MS_BTN3            f6
 #define X_MS_BTN4            f7
+#ifdef HAS_ACCELP
+#define X_MS_BTN5            f7
+#define X_MS_BTN6            f7
+#define X_MS_BTN7            f7
+#else
 #define X_MS_BTN5            f8
 #define X_MS_BTN6            f8
 #define X_MS_BTN7            f8
-#define X_MS_BTN8            f8
+#endif
 #else
 #define X_MS_UP              ed
 #define X_MS_DOWN            ee
@@ -387,8 +395,19 @@
 #define X_MS_BTN5            f5
 #define X_MS_BTN6            f6
 #define X_MS_BTN7            f7
-#define X_MS_BTN8            f8
 #endif
+#ifdef HAS_ACCELP
+#define X_MS_BTN8            f7
+#define X_MS_WH_UP           f8
+#define X_MS_WH_DOWN         f9
+#define X_MS_WH_LEFT         fa
+#define X_MS_WH_RIGHT        fb
+#define X_MS_ACCEL0          fc
+#define X_MS_ACCEL1          fd
+#define X_MS_ACCEL2          fe
+#define X_MS_ACCELP          ff
+#else
+#define X_MS_BTN8            f8
 #define X_MS_WH_UP           f9
 #define X_MS_WH_DOWN         fa
 #define X_MS_WH_LEFT         fb
@@ -396,6 +415,23 @@
 #define X_MS_ACCEL0          fd
 #define X_MS_ACCEL1          fe
 #define X_MS_ACCEL2          ff
+#endif
+
+#define HEX_TOKEN_TO_INT_(x) (0x ## x)
+#define HEX_TOKEN_TO_INT(x) HEX_TOKEN_TO_INT_(x)
+#define CHECK_MS_MACRO(x) _Static_assert(KC_MS_ ## x == HEX_TOKEN_TO_INT(X_MS_ ## x), "")
+CHECK_MS_MACRO(WH_UP);
+CHECK_MS_MACRO(BTN4);
+CHECK_MS_MACRO(BTN5);
+CHECK_MS_MACRO(BTN7);
+CHECK_MS_MACRO(BTN8);
+CHECK_MS_MACRO(ACCEL2);
+#ifdef HAS_ACCELP
+CHECK_MS_MACRO(ACCELP);
+#endif
+#undef HEX_TOKEN_TO_INT
+#undef HEX_TOKEN_TO_INT
+#undef CHECK_MS_MACRO
 
 // Send string macros
 #define STRINGIZE(z) #z

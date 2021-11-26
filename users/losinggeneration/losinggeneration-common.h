@@ -35,6 +35,9 @@
 #define MS_ACL0 KC_MS_ACCEL0
 #define MS_ACL1 KC_MS_ACCEL1
 #define MS_ACL2 KC_MS_ACCEL2
+#ifdef HAS_ACCELP
+#define MS_ACLP KC_MS_ACCELP
+#endif
 
 /*
  * This will expand values sent to it to send to the KEYMAP macro so defines
