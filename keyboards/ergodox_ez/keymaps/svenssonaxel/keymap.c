@@ -76,6 +76,13 @@ void update_led_brightness(void) {
   ergodox_led_all_set(led_brightness-1);
 }
 
+void ensure_layer1_alt_up(void) {
+  if(is_layer1_and_altdown) {
+    SEND_STRING(SS_UP(X_LALT) SS_DELAY(100));
+    is_layer1_and_altdown = false;
+  }
+}
+
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   if (keycode == UNLOCKKBD) {
     is_locked = false;
@@ -94,33 +101,39 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
     case ALTTAB:
       if(!is_layer1_and_altdown) {
-        SEND_STRING(SS_DOWN(X_LALT) SS_DELAY(100)); // The corresponding key-up event for left alt is in layer_state_set_user()
+        SEND_STRING(SS_DOWN(X_LALT) SS_DELAY(100)); // The corresponding key-up event for left alt is in ensure_layer1_alt_up()
         is_layer1_and_altdown = true;
       }
       SEND_STRING(SS_TAP(X_TAB));
       break;
     case CONND:
       ergodox_right_led_2_on();
+      ensure_layer1_alt_up();
       SEND_STRING(SS_TAP(X_LSUPER) SS_DELAY(100) SS_TAP(X_C) SS_DELAY(100) SS_TAP(X_O) SS_DELAY(100) SS_TAP(X_N) SS_DELAY(100) SS_TAP(X_N) SS_DELAY(100) SS_TAP(X_D) SS_DELAY(100) SS_TAP(X_ENTER));
       break;
     case CONNDBC:
       ergodox_right_led_2_on();
+      ensure_layer1_alt_up();
       SEND_STRING(SS_TAP(X_LSUPER) SS_DELAY(100) SS_TAP(X_C) SS_DELAY(100) SS_TAP(X_O) SS_DELAY(100) SS_TAP(X_N) SS_DELAY(100) SS_TAP(X_N) SS_DELAY(100) SS_TAP(X_D) SS_DELAY(100) SS_TAP(X_B) SS_DELAY(100) SS_TAP(X_C) SS_DELAY(100) SS_TAP(X_ENTER));
       break;
     case CONNLC:
       ergodox_right_led_2_on();
+      ensure_layer1_alt_up();
       SEND_STRING(SS_TAP(X_LSUPER) SS_DELAY(100) SS_TAP(X_C) SS_DELAY(100) SS_TAP(X_O) SS_DELAY(100) SS_TAP(X_N) SS_DELAY(100) SS_TAP(X_N) SS_DELAY(100) SS_TAP(X_L) SS_DELAY(100) SS_TAP(X_C) SS_DELAY(100) SS_TAP(X_ENTER));
       break;
     case CONNLCBC:
       ergodox_right_led_2_on();
+      ensure_layer1_alt_up();
       SEND_STRING(SS_TAP(X_LSUPER) SS_DELAY(100) SS_TAP(X_C) SS_DELAY(100) SS_TAP(X_O) SS_DELAY(100) SS_TAP(X_N) SS_DELAY(100) SS_TAP(X_N) SS_DELAY(100) SS_TAP(X_L) SS_DELAY(100) SS_TAP(X_C) SS_DELAY(100) SS_TAP(X_B) SS_DELAY(100) SS_TAP(X_C) SS_DELAY(100) SS_TAP(X_ENTER));
       break;
     case CYGWIN:
       ergodox_right_led_2_on();
+      ensure_layer1_alt_up();
       SEND_STRING(SS_TAP(X_LSUPER) SS_DELAY(100) SS_TAP(X_C) SS_DELAY(100) SS_TAP(X_Y) SS_DELAY(100) SS_TAP(X_G) SS_DELAY(100) SS_TAP(X_ENTER));
       break;
     case EXITVNCV:
       ergodox_right_led_2_on();
+      ensure_layer1_alt_up();
       SEND_STRING(SS_TAP(X_F8) SS_DELAY(100) SS_TAP(X_C));
       break;
     case LEDBRIGHT:
@@ -133,6 +146,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       break;
     case LOCKDESK:
       ergodox_right_led_2_on();
+      ensure_layer1_alt_up();
       SEND_STRING(SS_DOWN(X_LSUPER) SS_DELAY(100) SS_TAP(X_L) SS_DELAY(100) SS_UP(X_LSUPER));
       break;
     }
@@ -149,9 +163,8 @@ uint32_t layer_state_set_user(uint32_t state) {
   else {
     ergodox_right_led_3_off();
   }
-  if(is_layer1_and_altdown && layer == 0) {
-    SEND_STRING(SS_UP(X_LALT));
-    is_layer1_and_altdown = false;
+  if(layer != 1) {
+    ensure_layer1_alt_up();
   }
   return state;
 };
