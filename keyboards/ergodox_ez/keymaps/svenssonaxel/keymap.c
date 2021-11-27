@@ -2,6 +2,7 @@
 #include "version.h"
 #include "keymap_swedish.h"
 #include "keymap_us_international.h"
+#include "mousekey.h"
 
 #define SE_LESS SE_LABK
 #define SE_AA SE_ARNG
@@ -42,6 +43,8 @@ enum custom_keycodes {
   LEDBRIGHT,
   LOCKDESK,
   LOCKKBD,
+  MS_SLOW,
+  MS_SLOWER,
   UNLOCKKBD,
 };
 
@@ -59,7 +62,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   [1] = LAYOUT_ergodox_pretty(
     KC_ESC,    XXXXXXX,   XXXXXXX,   XXXXXXX,   XXXXXXX,   XXXXXXX,   XXXXXXX,                             XXXXXXX,   XXXXXXX,   XXXXXXX,   XXXXXXX,   LEDBRIGHT, XXXXXXX,   RESET,     //
     XXXXXXX,   XXXXXXX,   XXXXXXX,   XXXXXXX,   XXXXXXX,   XXXXXXX,   XXXXXXX,                             XXXXXXX,   XXXXXXX,   XXXXXXX,   MS_UP,     XXXXXXX,   MS_BTN2,   XXXXXXX,   //
-    XXXXXXX,   MS_ACCEL2, MS_ACCEL1, MS_ACCEL0, MS_ACCELP, XXXXXXX,                                                   MSW_UP,    MS_LEFT,   MS_DOWN,   MS_RIGHT,  MS_BTN1,   XXXXXXX,   //
+    MS_ACCEL2, MS_ACCEL1, MS_ACCEL0, MS_SLOW,   MS_SLOWER, XXXXXXX,                                                   MSW_UP,    MS_LEFT,   MS_DOWN,   MS_RIGHT,  MS_BTN1,   XXXXXXX,   //
     XXXXXXX,   CONNLC,    CONNLCBC,  CONND,     CONNDBC,   CYGWIN,    XXXXXXX,                             XXXXXXX,   MSW_DOWN,  MSW_LEFT,  XXXXXXX,   MSW_RIGHT, MS_BTN3,   XXXXXXX,   //
     KC_LSUPER, XXXXXXX,   XXXXXXX,   XXXXXXX,   XXXXXXX,                                                                         LOCKKBD,   UNLOCKKBD, XXXXXXX,   XXXXXXX,   XXXXXXX,   //
                                                                       XXXXXXX,   XXXXXXX,       XXXXXXX,   XXXXXXX,                                                                     //
@@ -71,9 +74,27 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 static bool is_layer1_and_altdown = false;
 static bool is_locked = false;
 static uint8_t led_brightness = 0x10;
+static bool slow_down = false;
+static bool slower_down = false;
+static bool accelp_down = false;
 
 void update_led_brightness(void) {
   ergodox_led_all_set(led_brightness-1);
+}
+
+void update_accelp(void) {
+  if(is_locked) {
+    return;
+  }
+  mk_interval_accelp = slower_down ? MOUSEKEY_INTERVAL_ACCELP_SLOWER : MOUSEKEY_INTERVAL_ACCELP_SLOW;
+  if((slow_down || slower_down) && !accelp_down) {
+    SEND_STRING(SS_DOWN(X_MS_ACCELP) SS_DELAY(100));
+    accelp_down = true;
+  }
+  if(!(slow_down || slower_down) && accelp_down) {
+    SEND_STRING(SS_UP(X_MS_ACCELP) SS_DELAY(100));
+    accelp_down = false;
+  }
 }
 
 void ensure_layer1_alt_up(void) {
@@ -149,8 +170,28 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       ensure_layer1_alt_up();
       SEND_STRING(SS_DOWN(X_LSUPER) SS_DELAY(100) SS_TAP(X_L) SS_DELAY(100) SS_UP(X_LSUPER));
       break;
+    case MS_SLOW:
+      slow_down = true;
+      update_accelp();
+      break;
+    case MS_SLOWER:
+      slower_down = true;
+      update_accelp();
+      break;
     }
     ergodox_right_led_2_off();
+  }
+  else {
+    switch (keycode) {
+    case MS_SLOW:
+      slow_down = false;
+      update_accelp();
+      break;
+    case MS_SLOWER:
+      slower_down = false;
+      update_accelp();
+      break;
+    }
   }
   return true;
 }
