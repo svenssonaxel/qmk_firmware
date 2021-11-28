@@ -104,9 +104,18 @@ void ensure_layer1_alt_up(void) {
   }
 }
 
+_Static_assert(sizeof(bool) == 1, "");
+bool eeprom_read_bool(const bool *addr) {
+    bool ret = 0;
+    eeprom_read_block(&ret, addr, 1);
+    return ret;
+}
+void eeprom_write_bool(bool *addr, bool value) { eeprom_write_block(&value, addr, 1); }
+
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   if (keycode == UNLOCKKBD) {
     is_locked = false;
+    eeprom_write_bool(EECONFIG_LOCKED, is_locked);
     ergodox_right_led_1_off();
     return true;
   }
@@ -115,6 +124,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   }
   if(keycode == LOCKKBD) {
     is_locked = true;
+    eeprom_write_bool(EECONFIG_LOCKED, is_locked);
     ergodox_right_led_1_on();
     return false;
   }
@@ -163,6 +173,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       } else {
         led_brightness = 1;
       }
+      eeprom_write_byte(EECONFIG_BRIGHTNESS, led_brightness);
       update_led_brightness();
       break;
     case LOCKDESK:
@@ -211,5 +222,12 @@ uint32_t layer_state_set_user(uint32_t state) {
 };
 
 void keyboard_post_init_user(void) {
+  led_brightness = eeprom_read_byte(EECONFIG_BRIGHTNESS);
   update_led_brightness();
+  is_locked = eeprom_read_bool(EECONFIG_LOCKED);
+  if(is_locked) {
+    ergodox_right_led_1_on();
+  } else {
+    ergodox_right_led_1_off();
+  }
 };
