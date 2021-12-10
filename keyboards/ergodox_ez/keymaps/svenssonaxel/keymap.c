@@ -64,7 +64,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     XXXXXXX,   XXXXXXX,   XXXXXXX,   XXXXXXX,   XXXXXXX,   XXXXXXX,   XXXXXXX,                             XXXXXXX,   XXXXXXX,   XXXXXXX,   MS_UP,     XXXXXXX,   MS_BTN2,   XXXXXXX,   //
     MS_ACCEL2, MS_ACCEL1, MS_ACCEL0, MS_SLOW,   MS_SLOWER, XXXXXXX,                                                   MSW_UP,    MS_LEFT,   MS_DOWN,   MS_RIGHT,  MS_BTN1,   XXXXXXX,   //
     XXXXXXX,   CONNLC,    CONNLCBC,  CONND,     CONNDBC,   CYGWIN,    XXXXXXX,                             XXXXXXX,   MSW_DOWN,  MSW_LEFT,  XXXXXXX,   MSW_RIGHT, MS_BTN3,   XXXXXXX,   //
-    KC_LSUPER, XXXXXXX,   XXXXXXX,   XXXXXXX,   XXXXXXX,                                                                         LOCKKBD,   UNLOCKKBD, XXXXXXX,   XXXXXXX,   XXXXXXX,   //
+    KC_LSUPER, XXXXXXX,   XXXXXXX,   XXXXXXX,   XXXXXXX,                                                                         LOCKKBD,   UNLOCKKBD, XXXXXXX,   XXXXXXX,   LOCKDESK,  //
                                                                       XXXXXXX,   XXXXXXX,       XXXXXXX,   XXXXXXX,                                                                     //
                                                                                  XXXXXXX,       OSM_LALT,                                                                               //
                                                            XXXXXXX,   XXXXXXX,   XXXXXXX,       OSM_LCTL,  EXITVNCV,  ALTTAB                                                            //
