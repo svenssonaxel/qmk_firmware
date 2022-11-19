@@ -242,32 +242,26 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       SEND_STRING(SS_TAP(X_TAB));
       break;
     case CONND:
-      ergodox_right_led_2_on();
       ensure_fnlayer_alt_up();
       SEND_STRING(SS_TAP(X_LSUPER) SS_DELAY(100) SS_TAP(X_C) SS_DELAY(100) SS_TAP(X_O) SS_DELAY(100) SS_TAP(X_N) SS_DELAY(100) SS_TAP(X_N) SS_DELAY(100) SS_TAP(X_D) SS_DELAY(100) SS_TAP(X_ENTER));
       break;
     case CONNDBC:
-      ergodox_right_led_2_on();
       ensure_fnlayer_alt_up();
       SEND_STRING(SS_TAP(X_LSUPER) SS_DELAY(100) SS_TAP(X_C) SS_DELAY(100) SS_TAP(X_O) SS_DELAY(100) SS_TAP(X_N) SS_DELAY(100) SS_TAP(X_N) SS_DELAY(100) SS_TAP(X_D) SS_DELAY(100) SS_TAP(X_B) SS_DELAY(100) SS_TAP(X_C) SS_DELAY(100) SS_TAP(X_ENTER));
       break;
     case CONNLC:
-      ergodox_right_led_2_on();
       ensure_fnlayer_alt_up();
       SEND_STRING(SS_TAP(X_LSUPER) SS_DELAY(100) SS_TAP(X_C) SS_DELAY(100) SS_TAP(X_O) SS_DELAY(100) SS_TAP(X_N) SS_DELAY(100) SS_TAP(X_N) SS_DELAY(100) SS_TAP(X_L) SS_DELAY(100) SS_TAP(X_C) SS_DELAY(100) SS_TAP(X_ENTER));
       break;
     case CONNLCBC:
-      ergodox_right_led_2_on();
       ensure_fnlayer_alt_up();
       SEND_STRING(SS_TAP(X_LSUPER) SS_DELAY(100) SS_TAP(X_C) SS_DELAY(100) SS_TAP(X_O) SS_DELAY(100) SS_TAP(X_N) SS_DELAY(100) SS_TAP(X_N) SS_DELAY(100) SS_TAP(X_L) SS_DELAY(100) SS_TAP(X_C) SS_DELAY(100) SS_TAP(X_B) SS_DELAY(100) SS_TAP(X_C) SS_DELAY(100) SS_TAP(X_ENTER));
       break;
     case CYGWIN:
-      ergodox_right_led_2_on();
       ensure_fnlayer_alt_up();
       SEND_STRING(SS_TAP(X_LSUPER) SS_DELAY(100) SS_TAP(X_C) SS_DELAY(100) SS_TAP(X_Y) SS_DELAY(100) SS_TAP(X_G) SS_DELAY(100) SS_TAP(X_ENTER));
       break;
     case EXITVNCV:
-      ergodox_right_led_2_on();
       ensure_fnlayer_alt_up();
       SEND_STRING(SS_TAP(X_F8) SS_DELAY(100) SS_TAP(X_C));
       break;
@@ -281,7 +275,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       update_led_brightness();
       break;
     case LOCKDESK:
-      ergodox_right_led_2_on();
       ensure_fnlayer_alt_up();
       SEND_STRING(SS_DOWN(X_LSUPER) SS_DELAY(100) SS_TAP(X_L) SS_DELAY(100) SS_UP(X_LSUPER));
       break;
@@ -294,7 +287,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       update_accelp();
       break;
     }
-    ergodox_right_led_2_off();
   }
   else {
     switch (keycode) {
@@ -312,6 +304,12 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 }
 
 uint32_t layer_state_set_user(uint32_t state) {
+  if (state & (1 << 1)) {
+    ergodox_right_led_2_on();
+  }
+  else {
+    ergodox_right_led_2_off();
+  }
   if (state & (1 << FN_LAYER)) {
     ergodox_right_led_3_on();
   }
