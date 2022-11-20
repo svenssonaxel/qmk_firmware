@@ -2,7 +2,6 @@
 #include "version.h"
 #include "keymap_swedish.h"
 #include "keymap_us_international.h"
-#include "mousekey.h"
 
 #define DELAY SS_DELAY(20)
 
@@ -47,8 +46,6 @@ enum custom_keycodes {
   LEDBRIGHT,
   LOCKDESK,
   LOCKKBD,
-  MS_SLOW,
-  MS_SLOWER,
   UNLOCKKBD,
   DOWN10,
   ENTERUPEND,
@@ -142,8 +139,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   [FN_LAYER] = LAYOUT_ergodox_pretty( // Fn Layer
     LOCKDESK,  XXXXXXX,   XXXXXXX,   XXXXXXX,   XXXXXXX,   XXXXXXX,   XXXXXXX,                             XXXXXXX,   XXXXXXX,   XXXXXXX,   XXXXXXX,   LEDBRIGHT, RESET,     LOCKDESK,  //
     KC_ESC,    XXXXXXX,   XXXXXXX,   XXXXXXX,   XXXXXXX,   XXXXXXX,   XXXXXXX,                             XXXXXXX,   XXXXXXX,   XXXXXXX,   MS_UP,     XXXXXXX,   XXXXXXX,   XXXXXXX,   //
-    XXXXXXX,   XXXXXXX,   MS_ACCEL0, MS_SLOW,   MS_SLOWER, XXXXXXX,                                                   MSW_UP,    MS_LEFT,   MS_DOWN,   MS_RIGHT,  MS_BTN2,   XXXXXXX,   //
-    MS_ACCEL2, MS_ACCEL1, CONNLCBC,  CONND,     CONNDBC,   CYGWIN,    XXXXXXX,                             XXXXXXX,   MSW_DOWN,  MSW_LEFT,  XXXXXXX,   MSW_RIGHT, MS_BTN1,   XXXXXXX,   //
+    XXXXXXX,   XXXXXXX,   MS_ACCEL1, MS_ACCEL0, MS_ACCELP, XXXXXXX,                                                   MSW_UP,    MS_LEFT,   MS_DOWN,   MS_RIGHT,  MS_BTN2,   XXXXXXX,   //
+    XXXXXXX,   MS_ACCEL2, CONNLCBC,  CONND,     CONNDBC,   CYGWIN,    XXXXXXX,                             XXXXXXX,   MSW_DOWN,  MSW_LEFT,  XXXXXXX,   MSW_RIGHT, MS_BTN1,   XXXXXXX,   //
     KC_LSUPER, CONNLC,    XXXXXXX,   XXXXXXX,   XXXXXXX,                                                                         LOCKKBD,   UNLOCKKBD, XXXXXXX,   MS_BTN3,   XXXXXXX,   //
                                                                       XXXXXXX,   XXXXXXX,       XXXXXXX,   XXXXXXX,                                                                     //
                                                                                  XXXXXXX,       OSM_LALT,                                                                               //
@@ -156,27 +153,9 @@ _Static_assert((KC_F | KC_J | KC_D | KC_K | KC_C | KC_COMMA | KC_S | KC_L | KC_A
 static bool is_fnlayer_and_altdown = false;
 static bool is_locked = false;
 static uint8_t led_brightness = 0x10;
-static bool slow_down = false;
-static bool slower_down = false;
-static bool accelp_down = false;
 
 void update_led_brightness(void) {
   ergodox_led_all_set(led_brightness-1);
-}
-
-void update_accelp(void) {
-  if(is_locked) {
-    return;
-  }
-  mk_interval_accelp = slower_down ? MOUSEKEY_INTERVAL_ACCELP_SLOWER : MOUSEKEY_INTERVAL_ACCELP_SLOW;
-  if((slow_down || slower_down) && !accelp_down) {
-    SEND_STRING(SS_DOWN(X_MS_ACCELP) DELAY);
-    accelp_down = true;
-  }
-  if(!(slow_down || slower_down) && accelp_down) {
-    SEND_STRING(SS_UP(X_MS_ACCELP) DELAY);
-    accelp_down = false;
-  }
 }
 
 void ensure_fnlayer_alt_up(void) {
@@ -279,26 +258,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     case LOCKDESK:
       ensure_fnlayer_alt_up();
       SEND_STRING(SS_DOWN(X_LSUPER) DELAY SS_TAP(X_L) DELAY SS_UP(X_LSUPER));
-      break;
-    case MS_SLOW:
-      slow_down = true;
-      update_accelp();
-      break;
-    case MS_SLOWER:
-      slower_down = true;
-      update_accelp();
-      break;
-    }
-  }
-  else {
-    switch (keycode) {
-    case MS_SLOW:
-      slow_down = false;
-      update_accelp();
-      break;
-    case MS_SLOWER:
-      slower_down = false;
-      update_accelp();
       break;
     }
   }
