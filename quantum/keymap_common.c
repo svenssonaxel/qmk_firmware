@@ -68,7 +68,7 @@ action_t action_for_keycode(uint16_t keycode) {
             break;
 #endif
 #ifdef MOUSEKEY_ENABLE
-        case KC_MS_UP ... KC_MS_ACCEL_LAST:
+        case KC_MS_UP ... KC_MS_ACCEL2:
             action.code = ACTION_MOUSEKEY(keycode);
             break;
 #endif
