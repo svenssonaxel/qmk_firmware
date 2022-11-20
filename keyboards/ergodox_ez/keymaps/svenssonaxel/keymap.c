@@ -21,7 +21,6 @@
 #define MS_ACCEL0 KC_MS_ACCEL0
 #define MS_ACCEL1 KC_MS_ACCEL1
 #define MS_ACCEL2 KC_MS_ACCEL2
-#define MS_ACCELP KC_MS_ACCELP
 #define MS_BTN1 KC_MS_BTN1
 #define MS_BTN2 KC_MS_BTN2
 #define MS_BTN3 KC_MS_BTN3
@@ -139,8 +138,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   [FN_LAYER] = LAYOUT_ergodox_pretty( // Fn Layer
     LOCKDESK,  XXXXXXX,   XXXXXXX,   XXXXXXX,   XXXXXXX,   XXXXXXX,   XXXXXXX,                             XXXXXXX,   XXXXXXX,   XXXXXXX,   XXXXXXX,   LEDBRIGHT, RESET,     LOCKDESK,  //
     KC_ESC,    XXXXXXX,   XXXXXXX,   XXXXXXX,   XXXXXXX,   XXXXXXX,   XXXXXXX,                             XXXXXXX,   XXXXXXX,   XXXXXXX,   MS_UP,     XXXXXXX,   XXXXXXX,   XXXXXXX,   //
-    XXXXXXX,   XXXXXXX,   MS_ACCEL1, MS_ACCEL0, MS_ACCELP, XXXXXXX,                                                   MSW_UP,    MS_LEFT,   MS_DOWN,   MS_RIGHT,  MS_BTN2,   XXXXXXX,   //
-    XXXXXXX,   MS_ACCEL2, CONNLCBC,  CONND,     CONNDBC,   CYGWIN,    XXXXXXX,                             XXXXXXX,   MSW_DOWN,  MSW_LEFT,  XXXXXXX,   MSW_RIGHT, MS_BTN1,   XXXXXXX,   //
+    XXXXXXX,   XXXXXXX,   MS_ACCEL2, MS_ACCEL1, MS_ACCEL0, XXXXXXX,                                                   MSW_UP,    MS_LEFT,   MS_DOWN,   MS_RIGHT,  MS_BTN2,   XXXXXXX,   //
+    XXXXXXX,   XXXXXXX,   CONNLCBC,  CONND,     CONNDBC,   CYGWIN,    XXXXXXX,                             XXXXXXX,   MSW_DOWN,  MSW_LEFT,  XXXXXXX,   MSW_RIGHT, MS_BTN1,   XXXXXXX,   //
     KC_LSUPER, CONNLC,    XXXXXXX,   XXXXXXX,   XXXXXXX,                                                                         LOCKKBD,   UNLOCKKBD, XXXXXXX,   MS_BTN3,   XXXXXXX,   //
                                                                       XXXXXXX,   XXXXXXX,       XXXXXXX,   XXXXXXX,                                                                     //
                                                                                  XXXXXXX,       OSM_LALT,                                                                               //
