@@ -34,6 +34,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #    ifdef MK_COMBINED
 #        error Cannot combine MK_CUSTOM_SPEED and MK_COMBINED
 #    endif
+#    ifdef MOUSEKEY_INERTIA
+#        error Cannot combine MK_CUSTOM_SPEED and MOUSEKEY_INERTIA
+#    endif
 #    ifndef MK_DEFAULT_MOVE_SPEED
 #        define MK_DEFAULT_MOVE_SPEED 0
 #    elif MK_DEFAULT_MOVE_SPEED < 0
