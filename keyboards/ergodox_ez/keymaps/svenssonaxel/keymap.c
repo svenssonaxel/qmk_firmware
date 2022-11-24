@@ -70,10 +70,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     SE_SECT,   KC_1,      KC_W,      KC_E,      KC_R,      KC_T,      KC_F3,                               KC_F4,     KC_Y,      KC_U,      KC_I,      KC_O,      KC_0,      SE_PLUS,   //
     KC_TAB,    KC_Q,      KC_S,      KC_D,      KC_F,      KC_G,                                                      KC_H,      KC_J,      KC_K,      KC_L,      KC_P,      SE_AA,     //
     KC_F5,     KC_A,      KC_X,      KC_C,      KC_V,      KC_B,      KC_F6,                               TO(1),     KC_N,      KC_M,      KC_COMMA,  KC_DOT,    SE_OE,     SE_AE,     //
-    SE_LESS,   KC_Z,      KC_F11,    KC_F12,    MO_FN,                                                                           KC_F13,    KC_F14,    KC_F15,    SE_MINS,   KC_RSHIFT, //
+    SE_LESS,   KC_Z,      KC_F11,    KC_F12,    MO_FN,                                                                           KC_F13,    KC_F14,    KC_F15,    SE_MINS,   KC_RSFT,   //
                                                                       KC_F17,    KC_F18,        KC_F19,    KC_F20,                                                                      //
                                                                                  KC_F21,        KC_F22,                                                                                 //
-                                                           KC_BSPACE, KC_DELETE, KC_F23,        KC_F24,    KC_ENTER,  KC_SPACE                                                          //
+                                                           KC_BSPC,   KC_DELETE, KC_F23,        KC_F24,    KC_ENTER,  KC_SPACE                                                          //
   ),
   [1] = LAYOUT_ergodox_pretty( // Local mode: Base
 #define LM_F     LT(3, KC_F)
@@ -94,10 +94,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     SE_SECT,   KC_1,      KC_W,      KC_E,      KC_R,      KC_T,      XXXXXXX,                             XXXXXXX,   KC_Y,      KC_U,      KC_I,      KC_O,      KC_0,      SE_PLUS,   //
     LM_TAB,    KC_Q,      LM_S,      LM_D,      LM_F,      KC_G,                                                      KC_H,      LM_J,      LM_K,      LM_L,      KC_P,      LM_AA,     //
     XXXXXXX,   LM_A,      KC_X,      LM_C,      KC_V,      KC_B,      XXXXXXX,                             TO(0),     KC_N,      KC_M,      LM_COMMA,  KC_DOT,    LM_OE,     SE_AE,     //
-    SE_LESS,   LM_Z,      XXXXXXX,   XXXXXXX,   MO_FN,                                                                           XXXXXXX,   XXXXXXX,   XXXXXXX,   LM_MINS,   KC_RSHIFT, //
+    SE_LESS,   LM_Z,      XXXXXXX,   XXXXXXX,   MO_FN,                                                                           XXXXXXX,   XXXXXXX,   XXXXXXX,   LM_MINS,   KC_RSFT,   //
                                                                       XXXXXXX,   XXXXXXX,       XXXXXXX,   XXXXXXX,                                                                     //
                                                                                  XXXXXXX,       OSM_LALT,                                                                               //
-                                                           KC_BSPACE, KC_DELETE, XXXXXXX,       OSM_LCTL,  KC_ENTER,  KC_SPACE                                                          //
+                                                           KC_BSPC,   KC_DELETE, XXXXXXX,       OSM_LCTL,  KC_ENTER,  KC_SPACE                                                          //
   ),
   [2] = LAYOUT_ergodox_pretty( // Local mode: Navigation
 #define ____ KC_TRANSPARENT
@@ -113,7 +113,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 #define CTL_ENTER  LCTL(KC_ENTER)
     ____,      ____,      ____,      CTLSFT_TAB,CTL_TAB,   ____,      ____,                                ____,      ____,      ____,      UP10,      ____,      ____,      ____,      //
     ____,      ____,      ALT_F4,    CTL_PGUP,  CTL_PGDN,  ALT_HOME,  ____,                                ____,      ____,      KC_HOME,   KC_UP,     KC_END,    ____,      ____,      //
-    ____,      KC_ESC,    ALT_RIGHT, SFT_TAB,   KC_TAB,    CTL_ENTER,                                                 ____,      KC_LEFT,   KC_DOWN,   KC_RIGHT,  KC_BSPACE, KC_DEL,    //
+    ____,      KC_ESC,    ALT_RIGHT, SFT_TAB,   KC_TAB,    CTL_ENTER,                                                 ____,      KC_LEFT,   KC_DOWN,   KC_RIGHT,  KC_BSPC,   KC_DEL,    //
     KC_CAPS,   ALT_LEFT,  ____,      ____,      ____,      ____,      ____,                                ____,      KC_INS,    LEFT10,    DOWN10,    RIGHT10,   KC_ENTER,  ENTERUPEND,//
     ____,      ____,      ____,      ____,      ____,                                                                            SP_LEFT,   ____,      ____,      SFTHM_BSP, SFTEND_BSP,//
                                                                       ____,      ____,          ____,      ____,                                                                        //
@@ -133,7 +133,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   [4] = LAYOUT_ergodox_pretty( // Local mode: Numpad
     ____,      ____,      KC_F12,    KC_F11,    KC_F10,    ____,      ____,                                ____,      KC_E,      KC_A,      KC_B,      KC_C,      ____,      ____,      //
     ____,      KC_F12,    KC_F9,     KC_F8,     KC_F7,     ____,      ____,                                ____,      SE_SLSH,   KC_7,      KC_8,      KC_9,      KC_D,      KC_F,      //
-    ____,      KC_F11,    KC_F6,     KC_F5,     KC_F4,     ____,                                                      SE_ASTR,   KC_4,      KC_5,      KC_6,      KC_BSPACE, KC_COMMA,  //
+    ____,      KC_F11,    KC_F6,     KC_F5,     KC_F4,     ____,                                                      SE_ASTR,   KC_4,      KC_5,      KC_6,      KC_BSPC,   KC_COMMA,  //
     ____,      KC_F10,    KC_F3,     KC_F2,     KC_F1,     ____,      ____,                                ____,      SE_PLUS,   KC_1,      KC_2,      KC_3,      KC_ENTER,  KC_DOT,    //
     ____,      ____,      SE_LPRN,   SE_RPRN,   ____,                                                                            KC_0,      SE_LBRC,   SE_RBRC,   KC_MINS,   SE_COLN,   //
                                                                       ____,      ____,          ____,      ____,                                                                        //
@@ -141,7 +141,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                            ____,      ____,      ____,          ____,      ____,      ____                                                              //
   ),
   [FN_LAYER] = LAYOUT_ergodox_pretty( // Fn Layer
-    LOCKDESK,  XXXXXXX,   XXXXXXX,   XXXXXXX,   XXXXXXX,   XXXXXXX,   XXXXXXX,                             XXXXXXX,   XXXXXXX,   XXXXXXX,   XXXXXXX,   LEDBRIGHT, RESET,     LOCKDESK,  //
+    LOCKDESK,  XXXXXXX,   XXXXXXX,   XXXXXXX,   XXXXXXX,   XXXXXXX,   XXXXXXX,                             XXXXXXX,   XXXXXXX,   XXXXXXX,   XXXXXXX,   LEDBRIGHT, QK_BOOT,   LOCKDESK,  //
     KC_ESC,    XXXXXXX,   XXXXXXX,   XXXXXXX,   XXXXXXX,   XXXXXXX,   XXXXXXX,                             XXXXXXX,   XXXXXXX,   XXXXXXX,   MS_UP,     XXXXXXX,   XXXXXXX,   XXXXXXX,   //
     XXXXXXX,   XXXXXXX,   MK_CSTM_2, MK_CSTM_1, MK_CSTM_0, XXXXXXX,                                                   MSW_UP,    MS_LEFT,   MS_DOWN,   MS_RIGHT,  MS_BTN2,   XXXXXXX,   //
     XXXXXXX,   MK_CSTM_3, CONNLCBC,  CONND,     CONNDBC,   CYGWIN,    XXXXXXX,                             XXXXXXX,   MSW_DOWN,  MSW_LEFT,  XXXXXXX,   MSW_RIGHT, MS_BTN1,   XXXXXXX,   //
@@ -241,10 +241,10 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       SEND_STRING(SS_TAP(X_RIGHT) DELAY SS_TAP(X_RIGHT) DELAY SS_TAP(X_RIGHT) DELAY SS_TAP(X_RIGHT) DELAY SS_TAP(X_RIGHT) DELAY SS_TAP(X_RIGHT) DELAY SS_TAP(X_RIGHT) DELAY SS_TAP(X_RIGHT) DELAY SS_TAP(X_RIGHT) DELAY SS_TAP(X_RIGHT));
       break;
     case SFTEND_BSP:
-      SEND_STRING(SS_DOWN(X_LSHIFT) DELAY SS_TAP(X_END) DELAY SS_UP(X_LSHIFT) DELAY SS_TAP(X_BSPACE));
+      SEND_STRING(SS_DOWN(X_LSFT) DELAY SS_TAP(X_END) DELAY SS_UP(X_LSFT) DELAY SS_TAP(X_BSPC));
       break;
     case SFTHM_BSP:
-      SEND_STRING(SS_DOWN(X_LSHIFT) DELAY SS_TAP(X_HOME) DELAY SS_UP(X_LSHIFT) DELAY SS_TAP(X_BSPACE));
+      SEND_STRING(SS_DOWN(X_LSFT) DELAY SS_TAP(X_HOME) DELAY SS_UP(X_LSFT) DELAY SS_TAP(X_BSPC));
       break;
     case SP_LEFT:
       SEND_STRING(SS_TAP(X_SPACE) DELAY SS_TAP(X_LEFT));
