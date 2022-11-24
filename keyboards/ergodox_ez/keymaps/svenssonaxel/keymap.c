@@ -2,6 +2,7 @@
 #include "version.h"
 #include "keymap_swedish.h"
 #include "keymap_us_international.h"
+#include "mousekey.h"
 
 #define DELAY SS_DELAY(20)
 
@@ -45,6 +46,10 @@ enum custom_keycodes {
   LEDBRIGHT,
   LOCKDESK,
   LOCKKBD,
+  MK_CSTM_0,
+  MK_CSTM_1,
+  MK_CSTM_2,
+  MK_CSTM_3,
   UNLOCKKBD,
   DOWN10,
   ENTERUPEND,
@@ -138,8 +143,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   [FN_LAYER] = LAYOUT_ergodox_pretty( // Fn Layer
     LOCKDESK,  XXXXXXX,   XXXXXXX,   XXXXXXX,   XXXXXXX,   XXXXXXX,   XXXXXXX,                             XXXXXXX,   XXXXXXX,   XXXXXXX,   XXXXXXX,   LEDBRIGHT, RESET,     LOCKDESK,  //
     KC_ESC,    XXXXXXX,   XXXXXXX,   XXXXXXX,   XXXXXXX,   XXXXXXX,   XXXXXXX,                             XXXXXXX,   XXXXXXX,   XXXXXXX,   MS_UP,     XXXXXXX,   XXXXXXX,   XXXXXXX,   //
-    XXXXXXX,   XXXXXXX,   MS_ACCEL2, MS_ACCEL1, MS_ACCEL0, XXXXXXX,                                                   MSW_UP,    MS_LEFT,   MS_DOWN,   MS_RIGHT,  MS_BTN2,   XXXXXXX,   //
-    XXXXXXX,   XXXXXXX,   CONNLCBC,  CONND,     CONNDBC,   CYGWIN,    XXXXXXX,                             XXXXXXX,   MSW_DOWN,  MSW_LEFT,  XXXXXXX,   MSW_RIGHT, MS_BTN1,   XXXXXXX,   //
+    XXXXXXX,   XXXXXXX,   MK_CSTM_2, MK_CSTM_1, MK_CSTM_0, XXXXXXX,                                                   MSW_UP,    MS_LEFT,   MS_DOWN,   MS_RIGHT,  MS_BTN2,   XXXXXXX,   //
+    XXXXXXX,   MK_CSTM_3, CONNLCBC,  CONND,     CONNDBC,   CYGWIN,    XXXXXXX,                             XXXXXXX,   MSW_DOWN,  MSW_LEFT,  XXXXXXX,   MSW_RIGHT, MS_BTN1,   XXXXXXX,   //
     KC_LSUPER, CONNLC,    XXXXXXX,   XXXXXXX,   XXXXXXX,                                                                         LOCKKBD,   UNLOCKKBD, XXXXXXX,   MS_BTN3,   XXXXXXX,   //
                                                                       XXXXXXX,   XXXXXXX,       XXXXXXX,   XXXXXXX,                                                                     //
                                                                                  XXXXXXX,       OSM_LALT,                                                                               //
@@ -152,9 +157,41 @@ _Static_assert((KC_F | KC_J | KC_D | KC_K | KC_C | KC_COMMA | KC_S | KC_L | KC_A
 static bool is_fnlayer_and_altdown = false;
 static bool is_locked = false;
 static uint8_t led_brightness = 0x10;
+static uint8_t mk_cstm_down = 0;
 
 void update_led_brightness(void) {
   ergodox_led_all_set(led_brightness-1);
+}
+
+void update_mousekey_speeds(void) {
+  if(is_locked) {
+    return;
+  }
+  static const uint8_t idx_lookup[16] = {
+      [0x5] =  1, // -S-F
+      [0xd] =  2, // AS-F
+      [0x9] =  3, // A--F
+      [0x1] =  4, // ---F
+      [0x3] =  5, // --DF
+      [0x2] =  6, // --D-
+      [0x7] =  6, // -SDF
+      [0x0] =  6, // ----
+      [0x6] =  7, // -SD-
+      [0xf] =  7, // ASDF
+      [0x4] =  8, // -S--
+      [0xe] =  8, // ASD-
+      [0xc] =  9, // AS--
+      [0x8] = 10, // A---
+      // Unused
+      [0xa] =  0, // A-D-
+      [0xb] =  0, // A-DF
+      };
+  uint8_t idx = idx_lookup[mk_cstm_down];
+  // Factor 10^(1/4) except for move_speeds with idx < 4.
+  // idx value:                              0    1    2    3     4     5     6     7      8      9     10
+  static const uint16_t move_speeds[11] =  { 0,   1,  10, 100, 1000, 1778, 3162, 5623, 10000, 17783, 31623};
+  static const uint16_t wheel_speeds[11] = { 0, 178, 316, 562, 1000, 1778, 3162, 5623, 10000, 17783, 31623};
+  mousekey_set_speeds(move_speeds[idx], wheel_speeds[idx]);
 }
 
 void ensure_fnlayer_alt_up(void) {
@@ -184,6 +221,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   }
   if(keycode == LOCKKBD) {
     is_locked = true;
+    mousekey_clear();
     eeprom_write_bool(EECONFIG_LOCKED, is_locked);
     ergodox_right_led_1_on();
     return false;
@@ -257,6 +295,42 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     case LOCKDESK:
       ensure_fnlayer_alt_up();
       SEND_STRING(SS_DOWN(X_LSUPER) DELAY SS_TAP(X_L) DELAY SS_UP(X_LSUPER));
+      break;
+    case MK_CSTM_0:
+      mk_cstm_down |= (1 << 0);
+      update_mousekey_speeds();
+      break;
+    case MK_CSTM_1:
+      mk_cstm_down |= (1 << 1);
+      update_mousekey_speeds();
+      break;
+    case MK_CSTM_2:
+      mk_cstm_down |= (1 << 2);
+      update_mousekey_speeds();
+      break;
+    case MK_CSTM_3:
+      mk_cstm_down |= (1 << 3);
+      update_mousekey_speeds();
+      break;
+    }
+  }
+  else {
+    switch (keycode) {
+    case MK_CSTM_0:
+      mk_cstm_down &= ~(1 << 0);
+      update_mousekey_speeds();
+      break;
+    case MK_CSTM_1:
+      mk_cstm_down &= ~(1 << 1);
+      update_mousekey_speeds();
+      break;
+    case MK_CSTM_2:
+      mk_cstm_down &= ~(1 << 2);
+      update_mousekey_speeds();
+      break;
+    case MK_CSTM_3:
+      mk_cstm_down &= ~(1 << 3);
+      update_mousekey_speeds();
       break;
     }
   }
