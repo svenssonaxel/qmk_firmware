@@ -1,5 +1,6 @@
 /*
  * Copyright 2011 Jun Wako <wakojun@gmail.com>
+ * Copyright 2022 Axel Svensson <mail@axelsvensson.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,6 +24,7 @@
 #include "debug.h"
 #include "mousekey.h"
 
+#ifndef MK_CUSTOM_SPEED
 inline int8_t times_inv_sqrt2(int8_t x) {
     // 181/256 is pretty close to 1/sqrt(2)
     // 0.70703125                 0.707106781
@@ -488,3 +490,153 @@ static void mousekey_debug(void) {
 }
 
 report_mouse_t mousekey_get_report(void) { return mouse_report; }
+
+#else /* ifdef MK_CUSTOM_SPEED */
+
+void mk_process(bool dosend);
+
+uint8_t onbit(uint8_t code) {
+    switch(code) {
+    case KC_MS_UP: return 0;
+    case KC_MS_DOWN: return 1;
+    case KC_MS_LEFT: return 2;
+    case KC_MS_RIGHT: return 3;
+    case KC_MS_WH_DOWN: return 4;
+    case KC_MS_WH_UP: return 5;
+    case KC_MS_WH_LEFT: return 6;
+    case KC_MS_WH_RIGHT: return 7;
+    case KC_MS_BTN1: return 8;
+    case KC_MS_BTN2: return 9;
+    case KC_MS_BTN3: return 10;
+    case KC_MS_BTN4: return 11;
+    case KC_MS_BTN5: return 12;
+    case KC_MS_BTN6: return 13;
+    case KC_MS_BTN7: return 14;
+    case KC_MS_BTN8: return 15;
+    default: return 16; // Render other codes ineffective
+    }
+}
+
+uint16_t on = 0;
+void mousekey_on(uint8_t code) {
+    uint16_t bit = (1 << onbit(code));
+    if(bit) {
+        mk_process(false);
+        on |= bit;
+        mk_process(true);
+    }
+}
+void mousekey_off(uint8_t code) {
+    uint16_t bit = (1 << onbit(code));
+    if(bit) {
+        mk_process(false);
+        on &= ~bit;
+        mk_process(true);
+    }
+}
+
+uint16_t move_speed = 0;
+uint16_t wheel_speed = 0;
+void mousekey_set_speeds(uint16_t new_move_speed, uint16_t new_wheel_speed) {
+    mk_process(false);
+    move_speed = new_move_speed;
+    wheel_speed = new_wheel_speed;
+    mk_process(true);
+}
+
+void mousekey_clear(void) {
+    mk_process(false);
+    on = 0;
+    move_speed = MK_DEFAULT_MOVE_SPEED;
+    wheel_speed = MK_DEFAULT_WHEEL_SPEED;
+    mk_process(true);
+}
+
+void mousekey_task(void) {
+    mk_process(true);
+}
+
+inline uint16_t times_inv_sqrt2(uint16_t x) {
+    // 46341/65536 is pretty close to 1/sqrt(2)
+    uint32_t ret = x * 46341;
+    ret += (ret & 0x8000); // Correct rounding
+    ret >>= 16; // Divide by 65536
+    return ret;
+}
+
+void mk_process(bool dosend) {
+    static int32_t latent_y = 0;
+    static int32_t latent_x = 0;
+    static int32_t latent_v = 0;
+    static int32_t latent_h = 0;
+    static uint16_t prev_on = 0;
+    static uint32_t prev_now = 0;
+    uint32_t now = timer_read32();
+    uint32_t elapsed = TIMER_DIFF_32(now, prev_now);
+    prev_now = now;
+    if(!on) {
+        prev_on = on;
+        return;
+    }
+    if(on && !prev_on) {
+        elapsed = 0;
+        latent_y = 0;
+        latent_x = 0;
+        latent_v = 0;
+        latent_h = 0;
+    }
+    uint16_t effective_move_speed = (__builtin_popcount(on & 0x0f) == 2) ?
+        times_inv_sqrt2(move_speed) : move_speed;
+    uint16_t effective_wheel_speed = (__builtin_popcount(on & 0xf0) == 2) ?
+        times_inv_sqrt2(wheel_speed) : wheel_speed;
+#   ifdef __X
+#   error __X already defined
+#   endif
+#   define __X(target, speed, on_offset) \
+        target += elapsed * speed * \
+                  (((on & (1 << on_offset)) ? -1 : 0) + \
+                   ((on & (2 << on_offset)) ? 1 : 0))
+    __X(latent_y, effective_move_speed, 0);
+    __X(latent_x, effective_move_speed, 2);
+    __X(latent_v, effective_wheel_speed, 4);
+    __X(latent_h, effective_wheel_speed, 6);
+#   undef __X
+    if(dosend) {
+        report_mouse_t mouse_report = {0};
+#       define __X(coord, bits) { \
+            int32_t offset = latent_##coord; \
+            offset += offset & (((int32_t)1) << bits); /* correct rounding */ \
+            offset >>= bits; \
+            if(offset < -127) offset = -127; \
+            if(offset > 127) offset = 127; \
+            mouse_report.coord = offset; \
+            latent_##coord -= (((int32_t)offset) * (((int32_t)1) << bits)); \
+        }
+        __X(y, 13);
+        __X(x, 13);
+        __X(v, 21);
+        __X(h, 21);
+#   undef __X
+        uint8_t buttons = on >> 8;
+        uint8_t prev_buttons = prev_on >> 8;
+        mouse_report.buttons = buttons;
+        if(buttons != prev_buttons ||
+           mouse_report.y || mouse_report.x ||
+           mouse_report.v || mouse_report.h) {
+            host_mouse_send(&mouse_report);
+        }
+        prev_on = on;
+    }
+}
+
+// In custom speed mode we decide ourselves when to send a mouse report, so we
+// will ignore explicit reauests to do so.
+void mousekey_send(void) {}
+
+// Return an empty report because we don't really have anything else that makes
+// sense. Also, this function is unused anyways.
+report_mouse_t mousekey_get_report(void) {
+    report_mouse_t ret = {0};
+    return ret;
+}
+#endif

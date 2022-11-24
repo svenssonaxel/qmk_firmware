@@ -170,6 +170,28 @@ To use constant speed mode, you must at least define `MK_COMBINED` in your keyma
 #define MK_COMBINED
 ```
 
+### Custom speed mode
+
+In this mode
+* `KC_ACL0`, `KC_ACL1` and `KC_ACL2` are ignored.
+* Offset, acceleration and interval configuration is ignored.
+* The curosr and wheel directions depend only on what keys are down, never in what order they were pressed.
+* You may set the cursor and wheel speeds using a function call:
+
+  ```c
+  void mousekey_set_speeds(uint16_t move_speed, uint16_t wheel_speed);
+  ```
+
+  For `move_speed` and `wheel_speed`, the whole `0-65535` range is valid.
+  There is no need to set offset and interval separately.
+  Instead, the offset is calculated dynamically to make the movement smooth and precise.
+
+|Define                   |Default      |Description             |
+|---------------------    |-------------|------------------------|
+|`MK_CUSTOM_SPEED`        |*Not defined*|Enable custom speed mode|
+|`MK_DEFAULT_MOVE_SPEED`  | 0           |Default speed for moving|
+|`MK_DEFAULT_WHEEL_SPEED` | 0           |Default speed for wheel |
+
 ## Use with PS/2 Mouse and Pointing Device
 
 Mouse keys button state is shared with [PS/2 mouse](feature_ps2_mouse.md) and [pointing device](feature_pointing_device.md) so mouse keys button presses can be used for clicks and drags.

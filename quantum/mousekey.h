@@ -1,5 +1,6 @@
 /*
 Copyright 2011 Jun Wako <wakojun@gmail.com>
+Copyright 2022 Axel Svensson <mail@axelsvensson.com>
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -19,6 +20,35 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <stdint.h>
 #include "host.h"
+
+#ifdef MK_CUSTOM_SPEED
+#    ifdef MK_KINETIC_SPEED
+#        error Cannot combine MK_CUSTOM_SPEED and MK_KINETIC_SPEED
+#    endif
+#    ifdef MK_3_SPEED
+#        error Cannot combine MK_CUSTOM_SPEED and MK_3_SPEED
+#    endif
+#    ifdef MK_MOMENTARY_ACCEL
+#        error Cannot combine MK_CUSTOM_SPEED and MK_MOMENTARY_ACCEL
+#    endif
+#    ifdef MK_COMBINED
+#        error Cannot combine MK_CUSTOM_SPEED and MK_COMBINED
+#    endif
+#    ifndef MK_DEFAULT_MOVE_SPEED
+#        define MK_DEFAULT_MOVE_SPEED 0
+#    elif MK_DEFAULT_MOVE_SPEED < 0
+#        error MK_DEFAULT_MOVE_SPEED needs to be in the 0-65535 range
+#    elif MK_DEFAULT_MOVE_SPEED > 65535
+#        error MK_DEFAULT_MOVE_SPEED needs to be in the 0-65535 range
+#    endif
+#    ifndef MK_DEFAULT_WHEEL_SPEED
+#        define MK_DEFAULT_WHEEL_SPEED 0
+#    elif MK_DEFAULT_WHEEL_SPEED < 0
+#        error MK_DEFAULT_WHEEL_SPEED needs to be in the 0-65535 range
+#    elif MK_DEFAULT_WHEEL_SPEED > 65535
+#        error MK_DEFAULT_WHEEL_SPEED needs to be in the 0-65535 range
+#    endif
+#endif
 
 #ifndef MK_3_SPEED
 
@@ -174,6 +204,10 @@ void           mousekey_off(uint8_t code);
 void           mousekey_clear(void);
 void           mousekey_send(void);
 report_mouse_t mousekey_get_report(void);
+
+#ifdef MK_CUSTOM_SPEED
+void mousekey_set_speeds(uint16_t move_speed, uint16_t wheel_speed);
+#endif
 
 #ifdef __cplusplus
 }
