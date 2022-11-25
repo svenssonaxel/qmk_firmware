@@ -698,8 +698,8 @@ void mousekey_off(uint8_t code) {
     }
 }
 
-uint16_t move_speed = 0;
-uint16_t wheel_speed = 0;
+uint16_t move_speed = MK_DEFAULT_MOVE_SPEED;
+uint16_t wheel_speed = MK_DEFAULT_WHEEL_SPEED;
 void mousekey_set_speeds(uint16_t new_move_speed, uint16_t new_wheel_speed) {
     mk_process(false);
     move_speed = new_move_speed;
@@ -737,16 +737,11 @@ void mk_process(bool dosend) {
     uint32_t now = timer_read32();
     uint32_t elapsed = TIMER_DIFF_32(now, prev_now);
     prev_now = now;
-    if(!on) {
-        prev_on = on;
+    if(!on && !prev_on) {
         return;
     }
     if(on && !prev_on) {
         elapsed = 0;
-        latent_y = 0;
-        latent_x = 0;
-        latent_v = 0;
-        latent_h = 0;
     }
     uint16_t effective_move_speed = (__builtin_popcount(on & 0x0f) == 2) ?
         times_inv_sqrt2(move_speed) : move_speed;
@@ -777,8 +772,8 @@ void mk_process(bool dosend) {
         }
         __X(y, 13);
         __X(x, 13);
-        __X(v, 21);
-        __X(h, 21);
+        __X(v, 18);
+        __X(h, 18);
 #   undef __X
         uint8_t buttons = on >> 8;
         uint8_t prev_buttons = prev_on >> 8;
