@@ -37,11 +37,11 @@
 enum custom_keycodes {
   RGB_SLD = EZ_SAFE_RANGE,
   ALTTAB,
-  CONND,
-  CONNDBC,
-  CONNLC,
-  CONNLCBC,
-  CYGWIN,
+  SC1,
+  SC2,
+  SC3,
+  SC4,
+  SC5,
   EXITVNCV,
   LEDBRIGHT,
   LOCKDESK,
@@ -144,8 +144,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     LOCKDESK,  XXXXXXX,   XXXXXXX,   XXXXXXX,   XXXXXXX,   XXXXXXX,   XXXXXXX,                             XXXXXXX,   XXXXXXX,   XXXXXXX,   XXXXXXX,   LEDBRIGHT, QK_BOOT,   LOCKDESK,  //
     KC_ESC,    XXXXXXX,   XXXXXXX,   XXXXXXX,   XXXXXXX,   XXXXXXX,   XXXXXXX,                             XXXXXXX,   XXXXXXX,   XXXXXXX,   MS_UP,     XXXXXXX,   XXXXXXX,   XXXXXXX,   //
     XXXXXXX,   XXXXXXX,   MK_CSTM_2, MK_CSTM_1, MK_CSTM_0, XXXXXXX,                                                   MSW_UP,    MS_LEFT,   MS_DOWN,   MS_RIGHT,  MS_BTN2,   XXXXXXX,   //
-    XXXXXXX,   MK_CSTM_3, CONNLCBC,  CONND,     CONNDBC,   CYGWIN,    XXXXXXX,                             XXXXXXX,   MSW_DOWN,  MSW_LEFT,  XXXXXXX,   MSW_RIGHT, MS_BTN1,   XXXXXXX,   //
-    KC_LSUPER, CONNLC,    XXXXXXX,   XXXXXXX,   XXXXXXX,                                                                         LOCKKBD,   UNLOCKKBD, XXXXXXX,   MS_BTN3,   XXXXXXX,   //
+    XXXXXXX,   MK_CSTM_3, SC2,       SC3,       SC4,       SC5,       XXXXXXX,                             XXXXXXX,   MSW_DOWN,  MSW_LEFT,  XXXXXXX,   MSW_RIGHT, MS_BTN1,   XXXXXXX,   //
+    KC_LSUPER, SC1,       XXXXXXX,   XXXXXXX,   XXXXXXX,                                                                         LOCKKBD,   UNLOCKKBD, XXXXXXX,   MS_BTN3,   XXXXXXX,   //
                                                                       XXXXXXX,   XXXXXXX,       XXXXXXX,   XXXXXXX,                                                                     //
                                                                                  XXXXXXX,       OSM_LALT,                                                                               //
                                                            XXXXXXX,   XXXXXXX,   XXXXXXX,       OSM_LCTL,  EXITVNCV,  ALTTAB                                                            //
@@ -259,25 +259,25 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       }
       SEND_STRING(SS_TAP(X_TAB));
       break;
-    case CONND:
+    case SC1:
       ensure_fnlayer_alt_up();
-      SEND_STRING(SS_TAP(X_LSUPER) DELAY SS_TAP(X_C) DELAY SS_TAP(X_O) DELAY SS_TAP(X_N) DELAY SS_TAP(X_N) DELAY SS_TAP(X_D) DELAY SS_TAP(X_ENTER));
+      SEND_STRING(SS_TAP(X_LSUPER) DELAY SS_TAP(X_S) DELAY SS_TAP(X_C) DELAY SS_TAP(X_1) DELAY SS_TAP(X_ENTER));
       break;
-    case CONNDBC:
+    case SC2:
       ensure_fnlayer_alt_up();
-      SEND_STRING(SS_TAP(X_LSUPER) DELAY SS_TAP(X_C) DELAY SS_TAP(X_O) DELAY SS_TAP(X_N) DELAY SS_TAP(X_N) DELAY SS_TAP(X_D) DELAY SS_TAP(X_B) DELAY SS_TAP(X_C) DELAY SS_TAP(X_ENTER));
+      SEND_STRING(SS_TAP(X_LSUPER) DELAY SS_TAP(X_S) DELAY SS_TAP(X_C) DELAY SS_TAP(X_2) DELAY SS_TAP(X_ENTER));
       break;
-    case CONNLC:
+    case SC3:
       ensure_fnlayer_alt_up();
-      SEND_STRING(SS_TAP(X_LSUPER) DELAY SS_TAP(X_C) DELAY SS_TAP(X_O) DELAY SS_TAP(X_N) DELAY SS_TAP(X_N) DELAY SS_TAP(X_L) DELAY SS_TAP(X_C) DELAY SS_TAP(X_ENTER));
+      SEND_STRING(SS_TAP(X_LSUPER) DELAY SS_TAP(X_S) DELAY SS_TAP(X_C) DELAY SS_TAP(X_3) DELAY SS_TAP(X_ENTER));
       break;
-    case CONNLCBC:
+    case SC4:
       ensure_fnlayer_alt_up();
-      SEND_STRING(SS_TAP(X_LSUPER) DELAY SS_TAP(X_C) DELAY SS_TAP(X_O) DELAY SS_TAP(X_N) DELAY SS_TAP(X_N) DELAY SS_TAP(X_L) DELAY SS_TAP(X_C) DELAY SS_TAP(X_B) DELAY SS_TAP(X_C) DELAY SS_TAP(X_ENTER));
+      SEND_STRING(SS_TAP(X_LSUPER) DELAY SS_TAP(X_S) DELAY SS_TAP(X_C) DELAY SS_TAP(X_4) DELAY SS_TAP(X_ENTER));
       break;
-    case CYGWIN:
+    case SC5:
       ensure_fnlayer_alt_up();
-      SEND_STRING(SS_TAP(X_LSUPER) DELAY SS_TAP(X_C) DELAY SS_TAP(X_Y) DELAY SS_TAP(X_G) DELAY SS_TAP(X_ENTER));
+      SEND_STRING(SS_TAP(X_LSUPER) DELAY SS_TAP(X_S) DELAY SS_TAP(X_C) DELAY SS_TAP(X_5) DELAY SS_TAP(X_ENTER));
       break;
     case EXITVNCV:
       ensure_fnlayer_alt_up();
