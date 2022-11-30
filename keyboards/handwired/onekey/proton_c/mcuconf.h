@@ -13,14 +13,10 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 #pragma once
 
-#define HAL_USE_PWM     TRUE
-#define HAL_USE_PAL     TRUE
-#define HAL_USE_SERIAL  TRUE
-// #define HAL_USE_I2C     TRUE
-#define HAL_USE_SPI     TRUE
-#define SPI_USE_WAIT    TRUE
-#define SPI_SELECT_MODE SPI_SELECT_MODE_PAD
+#include_next "mcuconf.h"
 
-#include_next <halconf.h>
+#undef STM32_ADC_USE_ADC1
+#define STM32_ADC_USE_ADC1 TRUE
