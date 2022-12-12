@@ -4,7 +4,7 @@
 #include "keymap_us_international.h"
 #include "mousekey.h"
 
-#define DELAY SS_DELAY(20)
+#define DELAY SS_DELAY(50)
 
 #define SE_LESS SE_LABK
 #define SE_AA SE_ARNG
