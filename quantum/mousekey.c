@@ -719,7 +719,7 @@ void mousekey_task(void) {
     mk_process(true);
 }
 
-inline uint16_t times_inv_sqrt2(uint16_t x) {
+static inline uint16_t times_inv_sqrt2(uint16_t x) {
     // 46341/65536 is pretty close to 1/sqrt(2)
     uint32_t ret = x * 46341;
     ret += (ret & 0x8000); // Correct rounding
