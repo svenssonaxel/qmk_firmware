@@ -159,6 +159,7 @@ static bool is_fnlayer_and_altdown = false;
 static bool is_locked = false;
 static uint8_t led_brightness = 0x10;
 static uint8_t mk_cstm_down = 0;
+static uint8_t key_down_count = 0;
 
 void update_led_brightness(void) {
   ergodox_led_all_set(led_brightness-1);
@@ -211,7 +212,13 @@ bool eeprom_read_bool(const bool *addr) {
 void eeprom_write_bool(bool *addr, bool value) { eeprom_write_block(&value, addr, 1); }
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-  if (keycode == UNLOCKKBD) {
+  if (record->event.pressed) {
+    key_down_count++;
+  }
+  else if (key_down_count) {
+    key_down_count--;
+  }
+  if (keycode == UNLOCKKBD && key_down_count == 1) {
     is_locked = false;
     eeprom_write_bool(EECONFIG_LOCKED, is_locked);
     ergodox_right_led_1_off();
