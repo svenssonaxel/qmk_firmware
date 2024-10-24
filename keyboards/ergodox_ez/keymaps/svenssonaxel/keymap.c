@@ -289,7 +289,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       break;
     case EXITVNCV:
       ensure_fnlayer_alt_up();
-      SEND_STRING(SS_TAP(X_F8) DELAY SS_TAP(X_C));
+      SEND_STRING(SS_TAP(X_F8) DELAY SS_TAP(X_E));
       break;
     case LEDBRIGHT:
       if(led_brightness) {
